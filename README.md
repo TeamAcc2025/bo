@@ -4,7 +4,7 @@ Development foundation for BO. Application scope and technology stack are still 
 
 ## Development
 
-Python 3.12+ and Git are needed for repository tooling; this does not select the application's stack.
+Python 3.12+, Node.js 22+, and Git are needed for repository tooling; this does not select the application's stack.
 
 ```sh
 bash scripts/setup.sh
@@ -16,3 +16,5 @@ validates repository hygiene; add application tests when application code exists
 
 See [AGENTS.md](AGENTS.md) for contributor instructions and
 [Codex Cloud setup](docs/codex-cloud.md) for the cloud environment.
+
+[Sandcastle](docs/sandcastle.md) provides a bounded Codex connectivity test.

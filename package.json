@@ -1,0 +1,14 @@
+{
+  "name": "bo",
+  "private": true,
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "test": "node --test .sandcastle/*.test.mjs",
+    "sandcastle:smoke": "timeout --signal=TERM --kill-after=5s 120s node .sandcastle/smoke.mjs"
+  },
+  "devDependencies": {
+    "@ai-hero/sandcastle": "0.12.0"
+  }
+}
