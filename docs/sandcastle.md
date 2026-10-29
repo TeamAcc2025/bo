@@ -14,7 +14,7 @@ private. A successful status check alone is not proof of a working model call.
 From a clean repository checkout, select a model available to that CLI/account:
 
 ```sh
-SANDCASTLE_MODEL=<available-model> npm run sandcastle:smoke
+SANDCASTLE_MODEL=gpt-6.1-sol npm run sandcastle:smoke
 ```
 
 The test calls `run()` with `noSandbox()` and one iteration. As approved by the
