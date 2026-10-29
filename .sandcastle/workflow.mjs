@@ -190,7 +190,7 @@ async function main(args) {
   assert.equal(process.platform, "linux", "Execute agents only inside the BO managed cloud VM");
   const policy = JSON.parse(await readFile("/etc/codex/network-policy.json", "utf8"));
   assert.equal(policy.version, 1, "Managed cloud network policy unavailable");
-  await command("timeout", ["--version"]);
+  assert.match(await command("timeout", ["--version"]), /\(GNU coreutils\)/, "GNU timeout is required");
   const permissions = JSON.parse(await gh("repo", "view", repo, "--json", "viewerPermission"));
   assert.ok(["ADMIN", "MAINTAIN", "WRITE"].includes(permissions.viewerPermission), "GitHub write authorization is required");
   await access(resolve(root, await git("rev-parse", "--git-path", "hooks/pre-commit")), constants.X_OK);

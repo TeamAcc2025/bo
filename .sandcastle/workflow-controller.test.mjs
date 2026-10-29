@@ -233,6 +233,7 @@ async function eventually(check, message) {
 for (const mode of ["timeout", "cancel"]) {
   test(`GNU timeout stops the whole fixture process group on ${mode}`, { skip: process.platform !== "linux", timeout: 15000 }, async (t) => {
     const timeoutVersion = execFileSync("timeout", ["--version"], { encoding: "utf8" }).split("\n")[0];
+    assert.match(timeoutVersion, /\(GNU coreutils\)/, "Process-group cleanup requires GNU timeout");
     const dir = await mkdtemp(join(tmpdir(), "bo-sandcastle-process-"));
     const pidsFile = join(dir, "pids.json");
     const log = await open(join(dir, "process.log"), "w", 0o600);

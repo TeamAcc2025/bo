@@ -81,6 +81,10 @@ Use `--concurrency 1..4`, `--rounds 1..10`, and `--task-minutes 1..120` to set
 bounds. Defaults are 2, 3 and 45 minutes. GNU timeout bounds each entire worker;
 the batch has a four-hour cap. Interruptions stop worker process groups. Internal
 Sandcastle idle timeouts alone cannot kill a stuck `noSandbox` child.
+Setup verifies GNU coreutils `timeout`: the uutils implementation is not a
+substitute for the tested process-group termination behavior. CI uses Ubuntu
+24.04 for this runtime contract. The cloud execution mode must permit process
+groups/signals; report an `EPERM` instead of disabling the timeout or its checks.
 
 Each worktree installs its own dependencies using `scripts/setup.sh --worktree`.
 The coordinator installs the shared Git hook once; workers keep that hook active
