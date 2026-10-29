@@ -60,3 +60,11 @@ Use the five canonical triage labels. For triage, read
 
 Single-context: root `GLOSSARY.md` and `docs/adr/`, created as decisions emerge.
 Before engineering exploration, follow `docs/agents/domain.md`.
+
+### Sandcastle
+
+Driving agents: for BO implementation in Codex Cloud, follow the task workflow
+in `docs/sandcastle.md`. Select independent approved tasks; the controller owns
+publication after checks and review. Attach every created PR to the chat.
+Sandcastle phase workers follow their assigned implementation or review prompt
+and keep execution within their task; they do not start nested batches.

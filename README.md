@@ -17,4 +17,5 @@ validates repository hygiene; add application tests when application code exists
 See [AGENTS.md](AGENTS.md) for contributor instructions and
 [Codex Cloud setup](docs/codex-cloud.md) for the cloud environment.
 
-[Sandcastle](docs/sandcastle.md) provides a bounded Codex connectivity test.
+[Sandcastle](docs/sandcastle.md) runs parallel task branches through implementation,
+checks, independent review, repair rounds, draft PRs, and required GitHub CI.

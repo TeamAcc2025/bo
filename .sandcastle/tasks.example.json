@@ -1,0 +1,12 @@
+[
+  {
+    "id": "sample-a",
+    "title": "Synthetic task A",
+    "body": "Example only for --dry-run. Replace with one approved, independent task and explicit acceptance criteria before execution."
+  },
+  {
+    "id": "sample-b",
+    "title": "Synthetic task B",
+    "body": "Example only for --dry-run. Replace with another approved task that does not depend on task A."
+  }
+]
