@@ -14,8 +14,9 @@ an environment.
    22+, and Git are the tooling requirements; no application dependencies exist yet.
 4. Keep environment access **Only me**. Keep production credentials, private
    services, VPN, and OIDC connections out of this environment.
-5. Allow package-manager domains and `github.com` for installing the pinned
-   repository hooks. Leave unrestricted public internet access disabled.
+5. Package-manager domains and `github.com` are enough to install repository
+   tools. Keep the owner's selected network policy; model calls also need access
+   to their service endpoints. Verify the enforced runtime policy after saving.
 6. Review setup and test results, save, and choose **Publish**. Confirm
    **Environment published** before starting work.
 
