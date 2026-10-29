@@ -1,4 +1,5 @@
 import assert from "node:assert/strict";
+import { execFileSync } from "node:child_process";
 import { mkdtemp, open, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -75,6 +76,7 @@ function remote(result, { exists = false, loseCreateResponse = false, failCreate
       }
       if (args[1] === "view") return JSON.stringify({ url, headRefOid: prHead, baseRefName: prBase, baseRefOid: prBaseOid });
     }
+    if (file === "gh" && args[0] === "api") return JSON.stringify({ url, headRefOid: prHead, baseRefName: prBase, baseRefOid: prBaseOid });
     assert.fail(`Unexpected controller call: ${file} ${JSON.stringify(args)}`);
   };
   return { call, calls };
@@ -150,7 +152,7 @@ test("CI waits for the required check on the exact PR revision", async () => {
   let polls = 0;
   const call = async (file, args) => {
     assert.equal(file, "gh");
-    assert.deepEqual(args, ["pr", "view", url, "--repo", "TeamAcc2025/bo", "--json", "headRefOid,baseRefOid,statusCheckRollup"]);
+    assert.deepEqual(args, ["pr", "view", url, "--repo", "TeamAcc2025/bo", "--json", "headRefOid,statusCheckRollup"]);
     polls++;
     return JSON.stringify({ headRefOid: head, statusCheckRollup: [
       { name: "Other check", status: "COMPLETED", conclusion: "SUCCESS" },
@@ -208,6 +210,17 @@ async function running(pid) {
   }
 }
 
+async function processMetadata(pid) {
+  try {
+    const value = await readFile(`/proc/${pid}/stat`, "utf8");
+    const [state, ppid, pgrp, session] = value.slice(value.lastIndexOf(")") + 2).trim().split(/\s+/);
+    return { pid, state, ppid: Number(ppid), pgrp: Number(pgrp), session: Number(session) };
+  } catch (error) {
+    if (error.code === "ENOENT") return { pid, exists: false };
+    throw error;
+  }
+}
+
 async function eventually(check, message) {
   const until = Date.now() + 5000;
   do {
@@ -219,6 +232,7 @@ async function eventually(check, message) {
 
 for (const mode of ["timeout", "cancel"]) {
   test(`GNU timeout stops the whole fixture process group on ${mode}`, { skip: process.platform !== "linux", timeout: 15000 }, async (t) => {
+    const timeoutVersion = execFileSync("timeout", ["--version"], { encoding: "utf8" }).split("\n")[0];
     const dir = await mkdtemp(join(tmpdir(), "bo-sandcastle-process-"));
     const pidsFile = join(dir, "pids.json");
     const log = await open(join(dir, "process.log"), "w", 0o600);
@@ -245,12 +259,21 @@ for (const mode of ["timeout", "cancel"]) {
       try { pids = JSON.parse(await readFile(pidsFile, "utf8")); return pids.length === 2; }
       catch (error) { if (error.code === "ENOENT") return false; throw error; }
     }, "Fixture subprocesses did not start");
+    const timeoutPid = [...children][0]?.pid;
+    const snapshot = () => Promise.all([timeoutPid, ...pids].map(processMetadata));
+    const before = await snapshot();
     if (mode === "cancel") {
       assert.equal(children.size, 1);
       assert.equal([...children][0].kill("SIGTERM"), true);
     }
     assert.equal((await completion).success, false);
+    const after = await snapshot();
     assert.equal(children.size, 0);
-    await eventually(async () => (await Promise.all(pids.map(running))).every((active) => !active), "Fixture process survived timeout/cancellation");
+    try {
+      await eventually(async () => (await Promise.all(pids.map(running))).every((active) => !active), "Fixture process survived timeout/cancellation");
+    } catch (error) {
+      error.message += `\nSynthetic process metadata: ${JSON.stringify({ timeoutVersion, timeoutPid, before, after, final: await snapshot() })}`;
+      throw error;
+    }
   });
 }

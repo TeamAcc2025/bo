@@ -8,9 +8,9 @@ import test from "node:test";
 import { pool, reviewVerdict, runTask } from "./workflow-core.mjs";
 
 const quote = (value) => `'${value.replaceAll("'", "'\\''")}'`;
-const fixtureAgent = fileURLToPath(new URL("./fixtures/agent.mjs", import.meta.url));
+const fixtureAgent = fileURLToPath(new URL("./fixtures/agent.py", import.meta.url));
 const git = (cwd, ...args) => execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
-const checkCommand = `${quote(process.execPath)} -e ${quote('const fs=require("node:fs"); if(fs.readFileSync("result.txt","utf8")!=="good\\n"){console.error("Synthetic check failed: repair result.txt");process.exit(1)}')}`;
+const checkCommand = `python3 -c ${quote('from pathlib import Path; import sys; good=Path("result.txt").read_text()=="good\\n"; sys.stderr.write("" if good else "Synthetic check failed: repair result.txt\\n"); sys.exit(0 if good else 1)')}`;
 
 async function fixture(t) {
   const dir = await mkdtemp(join(tmpdir(), "bo-sandcastle-test-"));
@@ -53,7 +53,7 @@ async function fixture(t) {
         agent: {
           name: "deterministic-fixture", env: {}, captureSessions: false,
           buildPrintCommand: ({ prompt }) => ({
-            command: `${quote(process.execPath)} ${quote(fixtureAgent)} ${quote(JSON.stringify(options))}`,
+            command: `python3 ${quote(fixtureAgent)} ${quote(JSON.stringify(options))}`,
             stdin: prompt,
           }),
           parseStreamLine: (line) => [JSON.parse(line)],

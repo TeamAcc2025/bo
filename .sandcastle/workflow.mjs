@@ -129,7 +129,10 @@ export async function publish(result, call = command, { stopped = () => false } 
     prs = await existing();
   }
   assert.equal(prs.length, 1, "Expected one task PR");
-  const pr = JSON.parse(await call("gh", ["pr", "view", prs[0].url, "--repo", repo, "--json", "url,headRefOid,baseRefName,baseRefOid"]));
+  const match = prs[0].url.match(/^https:\/\/github\.com\/TeamAcc2025\/bo\/pull\/([1-9]\d*)$/);
+  assert.ok(match, "Expected a BO pull request");
+  const pr = JSON.parse(await call("gh", ["api", `repos/${repo}/pulls/${match[1]}`, "--jq",
+    "{url:.html_url,headRefOid:.head.sha,baseRefName:.base.ref,baseRefOid:.base.sha}"]));
   assert.match(pr.url, /^https:\/\/github\.com\/TeamAcc2025\/bo\/pull\/[1-9]\d*$/);
   await privateJSON(join(result.dir, "publication.json"), { pr: pr.url, head: pr.headRefOid, base: pr.baseRefOid });
   assert.equal(pr.headRefOid, result.head);
@@ -139,12 +142,14 @@ export async function publish(result, call = command, { stopped = () => false } 
 }
 
 export async function waitForCI(pr, head, { call = command, stopped = () => false, base, timeoutMs = 600_000, intervalMs = 5000 } = {}) {
+  const match = pr.match(/^https:\/\/github\.com\/TeamAcc2025\/bo\/pull\/([1-9]\d*)$/);
+  assert.ok(match, "Expected a BO pull request");
   const deadline = Date.now() + timeoutMs;
   do {
     assert.ok(!stopped(), "Batch interrupted");
-    const value = JSON.parse(await call("gh", ["pr", "view", pr, "--repo", repo, "--json", "headRefOid,baseRefOid,statusCheckRollup"]));
+    const value = JSON.parse(await call("gh", ["pr", "view", pr, "--repo", repo, "--json", "headRefOid,statusCheckRollup"]));
     assert.equal(value.headRefOid, head, "PR revision changed while waiting for checks");
-    if (base !== undefined && value.baseRefOid !== base) return "base-changed";
+    if (base !== undefined && await call("gh", ["api", `repos/${repo}/pulls/${match[1]}`, "--jq", ".base.sha"]) !== base) return "base-changed";
     const check = (value.statusCheckRollup || []).find((entry) => entry.name === "Repository checks");
     if (check?.status === "COMPLETED") return check.conclusion === "SUCCESS" ? "success" : "failure";
     await new Promise((done) => setTimeout(done, intervalMs));

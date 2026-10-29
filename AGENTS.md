@@ -63,6 +63,8 @@ Before engineering exploration, follow `docs/agents/domain.md`.
 
 ### Sandcastle
 
-For parallel tasks, implementation loops, repair rounds, or agent-created PRs,
-follow `docs/sandcastle.md`. Select independent approved tasks; the controller
-owns publication after checks and review. Attach every created PR to the chat.
+Driving agents: for BO implementation in Codex Cloud, follow the task workflow
+in `docs/sandcastle.md`. Select independent approved tasks; the controller owns
+publication after checks and review. Attach every created PR to the chat.
+Sandcastle phase workers follow their assigned implementation or review prompt
+and keep execution within their task; they do not start nested batches.
