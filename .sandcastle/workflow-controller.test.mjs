@@ -272,7 +272,7 @@ for (const mode of ["timeout", "cancel"]) {
     try {
       await eventually(async () => (await Promise.all(pids.map(running))).every((active) => !active), "Fixture process survived timeout/cancellation");
     } catch (error) {
-      error.message += `\nSynthetic process metadata: ${JSON.stringify({ timeoutVersion, timeoutPid, before, after, final: await snapshot() })}`;
+      console.error(`Synthetic process metadata: ${JSON.stringify({ timeoutVersion, timeoutPid, before, after, final: await snapshot() })}`);
       throw error;
     }
   });
