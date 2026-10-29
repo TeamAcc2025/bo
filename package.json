@@ -6,6 +6,7 @@
   },
   "scripts": {
     "test": "node --test .sandcastle/*.test.mjs",
+    "sandcastle": "timeout --signal=TERM --kill-after=15s 4h node .sandcastle/workflow.mjs",
     "sandcastle:smoke": "timeout --signal=TERM --kill-after=5s 120s node .sandcastle/smoke.mjs"
   },
   "devDependencies": {

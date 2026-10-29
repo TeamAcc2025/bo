@@ -60,3 +60,9 @@ Use the five canonical triage labels. For triage, read
 
 Single-context: root `GLOSSARY.md` and `docs/adr/`, created as decisions emerge.
 Before engineering exploration, follow `docs/agents/domain.md`.
+
+### Sandcastle
+
+For parallel tasks, implementation loops, repair rounds, or agent-created PRs,
+follow `docs/sandcastle.md`. Select independent approved tasks; the controller
+owns publication after checks and review. Attach every created PR to the chat.
