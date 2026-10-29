@@ -26,6 +26,10 @@ In a selector that uses `@`, select the skill by its name. The project is alread
 initialized; re-run setup only to change its conventions. Current settings are in
 `issue-tracker.md`, `triage-labels.md`, and `domain.md`.
 
+If a cloud session's live catalog omits a skill, name it explicitly in the request;
+`AGENTS.md` directs the agent to load its repository file. Skills with
+`allow_implicit_invocation: false` are intentionally reserved for explicit use.
+
 ## Updating
 
 Review and pin an upstream revision, install only its released manifest paths,
