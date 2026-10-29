@@ -3,7 +3,7 @@ import { mkdtemp, open, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
 import test from "node:test";
-import { options, prBody, publish, validateTasks, waitForCI } from "./workflow.mjs";
+import { options, prBody, publish, textBlockers, validateTasks, waitForCI } from "./workflow.mjs";
 import { boundedProcess } from "./workflow-process.mjs";
 
 const head = "a".repeat(40);
@@ -56,7 +56,7 @@ async function publicationFixture(t, overrides = {}) {
 }
 
 function remote(result, { exists = false, loseCreateResponse = false, failCreate = false,
-  branchHead = result.head, mainHead = result.base, prHead = result.head, prBase = "main" } = {}) {
+  branchHead = result.head, mainHead = result.base, prHead = result.head, prBase = "main", prBaseOid = result.base } = {}) {
   const calls = [];
   let present = exists;
   const call = async (file, args) => {
@@ -73,7 +73,7 @@ function remote(result, { exists = false, loseCreateResponse = false, failCreate
         if (loseCreateResponse || failCreate) throw new Error("Synthetic transport failure");
         return url;
       }
-      if (args[1] === "view") return JSON.stringify({ url, headRefOid: prHead, baseRefName: prBase });
+      if (args[1] === "view") return JSON.stringify({ url, headRefOid: prHead, baseRefName: prBase, baseRefOid: prBaseOid });
     }
     assert.fail(`Unexpected controller call: ${file} ${JSON.stringify(args)}`);
   };
@@ -133,7 +133,7 @@ test("an existing PR is reused, while failed create and mismatched remote revisi
   const existing = remote(result, { exists: true });
   assert.equal(await publish(result, existing.call), url);
   assert.equal(existing.calls.filter(({ file, args }) => file === "gh" && args[1] === "create").length, 0);
-  for (const state of [{ failCreate: true }, { exists: true, prHead: moved }, { exists: true, prBase: "other" }]) {
+  for (const state of [{ failCreate: true }, { exists: true, prHead: moved }, { exists: true, prBase: "other" }, { exists: true, prBaseOid: moved }]) {
     await assert.rejects(publish(result, remote(result, state).call));
   }
 });
@@ -150,7 +150,7 @@ test("CI waits for the required check on the exact PR revision", async () => {
   let polls = 0;
   const call = async (file, args) => {
     assert.equal(file, "gh");
-    assert.deepEqual(args, ["pr", "view", url, "--repo", "TeamAcc2025/bo", "--json", "headRefOid,statusCheckRollup"]);
+    assert.deepEqual(args, ["pr", "view", url, "--repo", "TeamAcc2025/bo", "--json", "headRefOid,baseRefOid,statusCheckRollup"]);
     polls++;
     return JSON.stringify({ headRefOid: head, statusCheckRollup: [
       { name: "Other check", status: "COMPLETED", conclusion: "SUCCESS" },
@@ -171,6 +171,30 @@ test("missing, failed, moved or interrupted CI cannot produce a false green resu
   let called = false;
   await assert.rejects(waitForCI(url, head, { stopped: () => true, call: async () => { called = true; } }), /interrupted/);
   assert.equal(called, false);
+  assert.equal(await waitForCI(url, head, { call: ci([{ name: "Repository checks", status: "COMPLETED", conclusion: "SUCCESS" }]), base, timeoutMs: 0 }), "base-changed");
+});
+
+test("text-form blockers remain dependency gates and malformed references fail closed", () => {
+  assert.deepEqual(textBlockers("Scope\nBlocked by: #12, #15\n- Blocked by: #12\n"), [12, 15]);
+  assert.deepEqual(textBlockers("Blocked by: none\nBlocked by: \n"), []);
+  for (const body of ["Blocked by: other/repo#12", "Blocked by: waiting for approval", "Blocked by: #0"]) {
+    assert.throws(() => textBlockers(body));
+  }
+});
+
+test("cancellation blocks queued publication and stops before a later push/create stage", async (t) => {
+  const result = await publicationFixture(t);
+  const fake = remote(result);
+  await assert.rejects(publish(result, fake.call, { stopped: () => true }), /interrupted/);
+  assert.equal(fake.calls.length, 0);
+  let stop = false;
+  const call = async (file, args) => {
+    const value = await fake.call(file, args);
+    if (file === "git" && args[0] === "fetch") stop = true;
+    return value;
+  };
+  await assert.rejects(publish(result, call, { stopped: () => stop }), /interrupted/);
+  assert.ok(!fake.calls.some(({ args }) => args[0] === "push" || args[1] === "create"));
 });
 
 async function running(pid) {

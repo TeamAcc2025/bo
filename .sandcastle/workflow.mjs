@@ -54,6 +54,21 @@ export function options(args) {
   return values;
 }
 
+export function textBlockers(body) {
+  const numbers = new Set();
+  for (const [, line] of body.matchAll(/^[ \t]*(?:[-*][ \t]+)?Blocked by:[ \t]*([^\r\n]*)$/gim)) {
+    if (!line.trim() || /^(none|n\/a)$/i.test(line.trim())) continue;
+    assert.ok(line.replace(/#\d+/g, "").replace(/[, \t]/g, "") === "", "Use native blockers or local #N references in Blocked by");
+    for (const [, value] of line.matchAll(/#(\d+)/g)) {
+      const number = Number(value);
+      assert.ok(Number.isSafeInteger(number) && number > 0, "Invalid text blocker");
+      numbers.add(number);
+    }
+  }
+  assert.ok(numbers.size <= 50, "Too many text blockers");
+  return [...numbers];
+}
+
 async function selectedTasks(config) {
   if (config.plan) return validateTasks(JSON.parse(await readFile(resolve(config.plan), "utf8")));
   assert.ok(/^[1-9]\d*(,[1-9]\d*)*$/.test(config.issues), "Use --issues N,N");
@@ -64,8 +79,13 @@ async function selectedTasks(config) {
   for (const number of numbers) {
     const issue = JSON.parse(await gh("issue", "view", String(number), "--repo", repo, "--json", "number,title,body,state,labels,comments"));
     assert.ok(issue.state === "OPEN" && issue.labels.some((label) => label.name === "ready-for-agent"), "Selected issues must be open and ready-for-agent");
+    assert.ok(typeof issue.body === "string" && issue.body.trim(), "Selected issue needs a written specification");
     const blockers = await gh("api", "--paginate", `repos/${repo}/issues/${number}/dependencies/blocked_by`, "--jq", ".[].state");
     assert.ok(blockers.split("\n").filter(Boolean).every((state) => state === "closed"), "Selected issue has an open blocker");
+    for (const blocker of textBlockers(issue.body)) {
+      const state = JSON.parse(await gh("issue", "view", String(blocker), "--repo", repo, "--json", "state"));
+      assert.equal(state.state, "CLOSED", "Selected issue has an open text blocker");
+    }
     tasks.push({ id: `issue-${number}`, issue: number, title: issue.title,
       body: JSON.stringify({ specification: issue.body, comments: issue.comments }) });
   }
@@ -109,18 +129,22 @@ export async function publish(result, call = command, { stopped = () => false } 
     prs = await existing();
   }
   assert.equal(prs.length, 1, "Expected one task PR");
-  const pr = JSON.parse(await call("gh", ["pr", "view", prs[0].url, "--repo", repo, "--json", "url,headRefOid,baseRefName"]));
+  const pr = JSON.parse(await call("gh", ["pr", "view", prs[0].url, "--repo", repo, "--json", "url,headRefOid,baseRefName,baseRefOid"]));
+  assert.match(pr.url, /^https:\/\/github\.com\/TeamAcc2025\/bo\/pull\/[1-9]\d*$/);
+  await privateJSON(join(result.dir, "publication.json"), { pr: pr.url, head: pr.headRefOid, base: pr.baseRefOid });
   assert.equal(pr.headRefOid, result.head);
   assert.equal(pr.baseRefName, "main");
+  assert.equal(pr.baseRefOid, result.base, "PR base changed; preserve the draft for rebase, checks and review");
   return pr.url;
 }
 
-export async function waitForCI(pr, head, { call = command, stopped = () => false, timeoutMs = 600_000, intervalMs = 5000 } = {}) {
+export async function waitForCI(pr, head, { call = command, stopped = () => false, base, timeoutMs = 600_000, intervalMs = 5000 } = {}) {
   const deadline = Date.now() + timeoutMs;
   do {
     assert.ok(!stopped(), "Batch interrupted");
-    const value = JSON.parse(await call("gh", ["pr", "view", pr, "--repo", repo, "--json", "headRefOid,statusCheckRollup"]));
+    const value = JSON.parse(await call("gh", ["pr", "view", pr, "--repo", repo, "--json", "headRefOid,baseRefOid,statusCheckRollup"]));
     assert.equal(value.headRefOid, head, "PR revision changed while waiting for checks");
+    if (base !== undefined && value.baseRefOid !== base) return "base-changed";
     const check = (value.statusCheckRollup || []).find((entry) => entry.name === "Repository checks");
     if (check?.status === "COMPLETED") return check.conclusion === "SUCCESS" ? "success" : "failure";
     await new Promise((done) => setTimeout(done, intervalMs));
@@ -219,7 +243,7 @@ async function main(args) {
     result.ci = "pending";
     await privateJSON(join(taskDir, "result.json"), result);
     console.log(`${task.id}: ${result.pr}`);
-    try { result.ci = await waitForCI(result.pr, result.head, { stopped: () => stopping }); }
+    try { result.ci = await waitForCI(result.pr, result.head, { base, stopped: () => stopping }); }
     catch { result.ci = "unconfirmed"; }
     await privateJSON(join(taskDir, "result.json"), result);
     console.log(`${task.id}: CI ${result.ci}`);
@@ -227,8 +251,16 @@ async function main(args) {
   });
   process.removeListener("SIGINT", stop);
   process.removeListener("SIGTERM", stop);
-  const summary = outcomes.map((outcome, i) => outcome.status === "fulfilled"
-    ? outcome.value : { id: tasks[i].id, status: "failed", branch: `sandcastle/${runId}/${tasks[i].id}` });
+  const summary = await Promise.all(outcomes.map(async (outcome, i) => {
+    if (outcome.status === "fulfilled") return outcome.value;
+    const failed = { id: tasks[i].id, status: "failed", branch: `sandcastle/${runId}/${tasks[i].id}` };
+    try {
+      const publication = JSON.parse(await readFile(join(dir, tasks[i].id, "publication.json"), "utf8"));
+      failed.pr = publication.pr;
+      console.log(`${failed.id}: preserved draft ${failed.pr}`);
+    } catch { /* The task may have failed before any PR existed. */ }
+    return failed;
+  }));
   await privateJSON(join(dir, "summary.json"), summary);
   console.log(`Private run report: ${dir}/summary.json`);
   if (summary.some((task) => task.status !== "pr-created" || task.ci !== "success")) process.exitCode = stopping ? 130 : 1;

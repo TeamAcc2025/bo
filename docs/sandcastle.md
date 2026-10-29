@@ -46,6 +46,8 @@ SANDCASTLE_MODEL=gpt-6.1-sol npm run sandcastle -- --issues 12,15
 Issue numbers above are illustrative. Select tasks that can be reviewed and
 merged independently; tasks depending on each other's changes belong in later
 batches. The runner does not sweep the public backlog automatically.
+The documented `Blocked by: #N` body fallback is checked too; unresolved or
+unrecognised dependency references stop selection before any worker starts.
 
 For owner-selected work without issues, provide a private JSON file containing
 objects with `id`, `title`, and `body` (specification plus acceptance criteria).
