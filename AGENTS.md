@@ -37,3 +37,25 @@ access boundary. Do not invent business rules, integrations, or acceptance resul
 
 Report the resulting behavior, verification, and any remaining limitation in the
 owner's language. Keep code identifiers and repository tooling in English.
+
+## Agent skills
+
+Matt Pocock Skills are installed in `.agents/skills/`; see
+`docs/agents/matt-skills.md` for the pinned source and invocation examples.
+When a skill calls another skill, read its `.agents/skills/<name>/SKILL.md` and
+follow those instructions with the tools available in Codex.
+
+### Issue tracker
+
+Tasks and specs live in GitHub Issues for `TeamAcc2025/bo`. When reading or
+publishing tickets, follow `docs/agents/issue-tracker.md`.
+
+### Triage labels
+
+Use the five canonical triage labels. For triage, read
+`docs/agents/triage-labels.md`.
+
+### Domain docs
+
+Single-context: root `GLOSSARY.md` and `docs/adr/`, created as decisions emerge.
+Before engineering exploration, follow `docs/agents/domain.md`.
