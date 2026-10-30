@@ -46,6 +46,9 @@ For an explicitly named Matt skill, or one invoked by another skill, read
 `.agents/skills/<name>/SKILL.md` and follow it with the available Codex tools.
 This also applies when the environment's live skill catalog omits the skill.
 
+For Ponytail, read [usage and scope](docs/agents/ponytail.md). If the live skill
+catalog omits it, read `.agents/skills/ponytail/SKILL.md` directly when invoked.
+
 ### Issue tracker
 
 Tasks and specs live in GitHub Issues for `TeamAcc2025/bo`. When reading or
