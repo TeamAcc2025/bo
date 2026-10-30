@@ -14,6 +14,8 @@ bash scripts/check.sh
 Changes go through pull requests to `main`. The required `Repository checks` job
 validates repository hygiene; add application tests when application code exists.
 
+See [Triage labels](docs/agents/triage-labels.md) for issue triage.
+
 See [AGENTS.md](AGENTS.md) for contributor instructions and
 [Codex Cloud setup](docs/codex-cloud.md) for the cloud environment.
 
