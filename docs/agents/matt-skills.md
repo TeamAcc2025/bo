@@ -15,7 +15,10 @@ provide the cloud installation.
 
 ## Use
 
-In a new Codex task, invoke `$ask-matt` to choose a workflow. Examples:
+BO's standing owner instruction in `AGENTS.md` requests automatic selection of
+task-appropriate Matt Skills. Users only need to describe their task; agents read
+the selected repository `SKILL.md` before applying it. Use `$ask-matt` when a
+workflow choice needs guidance. Manual invocations remain available. Examples:
 
 - `$grill-with-docs` to clarify the first workflow and record agreed domain terms.
 - `$to-spec` then `$to-tickets` to publish agreed work to the configured tracker.
@@ -26,9 +29,10 @@ In a selector that uses `@`, select the skill by its name. The project is alread
 initialized; re-run setup only to change its conventions. Current settings are in
 `issue-tracker.md`, `triage-labels.md`, and `domain.md`.
 
-If a cloud session's live catalog omits a skill, name it explicitly in the request;
-`AGENTS.md` directs the agent to load its repository file. Skills with
-`allow_implicit_invocation: false` are intentionally reserved for explicit use.
+If a cloud session's live catalog omits a selected skill, load its repository
+file as directed by `AGENTS.md`. Vendored invocation metadata is unchanged;
+the owner's standing BO request supplies explicit authorization to select the
+appropriate workflows without repeating skill names in each task.
 
 ## Updating
 
