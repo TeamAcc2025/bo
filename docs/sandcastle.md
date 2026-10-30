@@ -101,6 +101,26 @@ blindly or remove a worktree containing needed changes. A failed publication can
 leave a pushed branch or draft PR; inspect the private report and GitHub before
 retrying. Never upload raw run artifacts.
 
+## GBrain in task phases
+
+Every implementation and independent review worker must call native GBrain BO
+`recall` with `entity="projects/bo"` before planning its phase. The controller
+puts this requirement in the phase prompt, outside specification data, and
+checks the native CLI event stream before accepting phase completion.
+
+Each phase writes a private `<phase>-<round>.gbrain.json` receipt beside its log.
+It contains the phase, round, native call ID, server/tool, entity and success
+boolean. It excludes returned facts, arbitrary arguments and error payloads.
+A completed native `codex_apps` call to `gbrain_bo.recall` or `gbrain_bo_recall`
+must match the entity and have a result without transport/MCP errors. Missing
+calls, failed calls, a coordinator-only recall, shell output and model claims
+cannot satisfy this gate. Failure preserves the worktree and blocks publication.
+
+Sandcastle 0.12.0's formatted Codex logs omit MCP calls. The controller therefore
+uses its supported file logger's raw `onAgentStreamEvent` callback and retains
+only allowlisted receipt metadata. Session capture and verbose raw logging stay
+disabled. Inspect receipts privately; never publish full phase logs or facts.
+
 ## Cloud smoke test
 
 Use the existing isolated BO cloud VM, Node.js 22+, Git, GNU `timeout`, and a
