@@ -16,6 +16,8 @@ into the upstream skills repository. Public-data rules are in `AGENTS.md`.
 - Represent blockers with native issue dependencies when available; otherwise
   use `Blocked by: #<number>` in the body. Start only after all blockers close.
 - Closing work: include verification evidence and link the implementation PR.
+  Generated development PRs remain draft; merging requires the owner's explicit
+  request and passing required checks.
   A triage label alone does not override dependencies or owner approval gates.
 
 ## Pull requests as a triage surface
