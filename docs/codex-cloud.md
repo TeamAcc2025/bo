@@ -35,6 +35,8 @@ then review Codex's diff and test results. Open a PR and wait for `Repository
 checks`. Merge by squash when the owner requests it. The checks currently cover
 repository hygiene, not application behavior.
 
+See the [issue tracker guide](agents/issue-tracker.md) for managing GitHub issue specifications, dependencies, and completion evidence.
+
 Keep business details in private task context. Public repository branches, issues,
 PRs, and Actions logs are readable by everyone. GitHub's secret scanning and push
 protection cover supported secret patterns; the local checks also detect private
