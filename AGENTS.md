@@ -7,7 +7,7 @@ acceptance criteria with the owner before introducing an application framework.
 ## Working language
 
 Use English for written analysis, plans, agent task instructions, progress
-updates, replies, code comments, documentation, commit messages, and PRs, even
+updates, replies, code identifiers/comments, documentation, commit messages, and PRs, even
 when the task is submitted in another language. Preserve user-provided content
 and domain terms when their original language matters. Follow explicit requests
 for translation or localized product content.
@@ -43,11 +43,11 @@ defaults without requiring a repeated setup prompt or manual skill mentions:
    `CODEX_HOME`, proxy, CA trust, authentication headers, and mandatory guards.
    Stop on missing bindings or authentication failure; do not introduce an
    API-key fallback or request a new login as routine setup.
-5. Complete implementation, normal checks, independent review of the checked
+5. For implementation tasks, complete normal checks, independent review of the checked
    revision, draft PR publication, and required CI. Keep hooks enabled and
    attach every created PR. Merge and deploy only on the owner's explicit
-   request. Report results and remaining limitations in English; verify remote
-   auth writeback and removal of temporary custom caches after execution.
+   request. After Sandcastle execution, verify remote auth writeback and removal
+   of temporary custom caches.
 
 ## Public repository
 
@@ -80,17 +80,12 @@ Check correctness, tests, public-data exposure, and CI permissions. Once company
 data is introduced, verify authorization and company isolation at every data
 access boundary. Do not invent business rules, integrations, or acceptance results.
 
-Report the resulting behavior, verification, and any remaining limitation in
-English. Keep code identifiers and repository tooling in English.
+Report the resulting behavior, verification, and any remaining limitation.
 
 ## Agent skills
 
 Matt Pocock Skills are installed in `.agents/skills/`; see
 `docs/agents/matt-skills.md` for the pinned source and invocation examples.
-Select task-appropriate skills automatically under the standing workflow above.
-For a selected Matt skill, one explicitly named, or one invoked by another skill, read
-`.agents/skills/<name>/SKILL.md` and follow it with the available Codex tools.
-This also applies when the environment's live skill catalog omits the skill.
 
 ### Issue tracker
 
@@ -106,11 +101,3 @@ Use the five canonical triage labels. For triage, read
 
 Single-context: root `GLOSSARY.md` and `docs/adr/`, created as decisions emerge.
 Before engineering exploration, follow `docs/agents/domain.md`.
-
-### Sandcastle
-
-Driving agents: for BO implementation in Codex Cloud, follow the task workflow
-in `docs/sandcastle.md`. Select independent approved tasks; the controller owns
-publication after checks and review. Attach every created PR to the chat.
-Sandcastle phase workers follow their assigned implementation or review prompt
-and keep execution within their task; they do not start nested batches.
