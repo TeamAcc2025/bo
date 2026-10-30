@@ -29,17 +29,40 @@ agent and confirm current enforced network/credential readiness. Use the BO
 managed cloud VM, a clean checkout, and `bash scripts/setup.sh` at the coordinator
 root. GitHub CLI must have write access to BO; the model must have working auth.
 The controller checks both and performs the smoke test before starting workers.
-Preserve injected proxy, CA, authentication headers and guard variables. A
-read-only platform auth store is not a reason to replace `CODEX_HOME` or copy
-credentials from another machine. Restore platform login or configure the
-documented `CODEX_API_KEY` HTTP secret for `api.openai.com` in the private cloud
-environment; API usage is billed separately from ChatGPT. Keep credentials out
-of public CI.
+Workers do not run nested batches or live smoke tests.
+
+Use the [owner subscription runtime](codex-cloud.md#owner-subscription-runtime):
+two independent saved ChatGPT sessions, with exclusive use of each slot by one
+native process at a time. Keep native execution within those two slots even if
+the batch concurrency setting is higher. Private provisioning supplies the
+runtime, persistent storage bindings, and `sandcastle.env` selector. Source it
+in the same shell as each batch or smoke command; a separate shell/tool call
+does not carry that selection forward. The private paths in examples are
+placeholders. Keep parent `CODEX_HOME` at its standard platform location and
+preserve parent config/auth, proxy, CA, authentication headers, guards, hooks,
+and checks. A read-only platform auth store is not a reason to replace it or
+copy credentials from another machine.
+
+Native Codex refreshes each slot's cache; persist and write back the updated
+cache to its private storage before releasing the slot or discarding the VM.
+Reuse the latest saved cache for future tasks. New VMs require the runtime and
+bindings provisioned, then the same-shell selector; they do not require routine
+new logins. Missing bindings or failed persistence must fail visibly. On auth
+failure, stop for owner repair rather than blindly retrying or changing platform
+auth. No API-key requirement or fallback applies to this selected runtime.
+Keep production auth/cache and private binding values out of public Git,
+Actions, logs, artifacts, and images.
+
+This owner-private choice does not establish official support for public CI.
+OpenAI's [advanced CI/CD account-auth recipe](https://learn.chatgpt.com/docs/auth/ci-cd-auth)
+excludes public and open-source repositories; BO's public Actions checks remain
+offline and credential-free.
 
 Select explicit issues whose scope and acceptance criteria are agreed, whose
 label is `ready-for-agent`, and whose native blocking issues are closed:
 
 ```sh
+source /private/path/sandcastle.env && \
 SANDCASTLE_MODEL=gpt-6.1-sol npm run sandcastle -- --issues 12,15
 ```
 
@@ -55,6 +78,7 @@ An optional integer `issue` links an existing public issue. IDs use lowercase
 letters, digits and hyphens, up to 40 characters. Do not commit private plans.
 
 ```sh
+source /private/path/sandcastle.env && \
 SANDCASTLE_MODEL=gpt-6.1-sol npm run sandcastle -- --plan /private/path/tasks.json
 ```
 
@@ -104,13 +128,16 @@ retrying. Never upload raw run artifacts.
 ## Cloud smoke test
 
 Use the existing isolated BO cloud VM, Node.js 22+, Git, GNU `timeout`, and a
-Codex CLI with working authentication and network access. Check authentication
-with `codex login status`; keep credential values and credential-file contents
-private. A successful status check alone is not proof of a working model call.
+Codex CLI with working authentication and network access through the provisioned
+owner runtime. The controller sources the private selector in the same shell
+before checking `codex login status` or running the test; keep credential values
+and credential-file contents private. A successful status check alone is not
+proof of a working model call. Workers never run this live test.
 
 From a clean repository checkout, select a model available to that CLI/account:
 
 ```sh
+source /private/path/sandcastle.env && \
 SANDCASTLE_MODEL=gpt-6.1-sol npm run sandcastle:smoke
 ```
 
@@ -128,9 +155,9 @@ Logs stay under ignored `.sandcastle/logs/`; never upload them with credentials
 or private business content. If a timeout occurs, verify that no test child is
 left running before retrying.
 
-CI runs only offline configuration tests. It does not receive model credentials or run
-inference. Configure model-service access in the private cloud environment when
-needed; local Mac credentials are not copied into it.
+CI runs only offline configuration tests. It does not receive model credentials
+or run inference. Reuse provisioned private subscription bindings for later tasks
+and new VMs as described above; local Mac credentials are not copied into them.
 
 The smoke prompt remains nonmutating. Product work uses the task workflow above.
 
@@ -144,4 +171,5 @@ do not publish PRs; they do not establish live model authorization.
 
 Sources: [Sandcastle reusable sandboxes](https://github.com/mattpocock/sandcastle/blob/a53e227250fb51df0ad54155b85fecc1c090c937/src/createSandbox.ts),
 [native issue dependencies](https://docs.github.com/en/rest/issues/issue-dependencies),
-[Codex noninteractive authentication](https://learn.chatgpt.com/docs/non-interactive-mode#use-api-key-auth).
+[Codex saved CLI authentication](https://learn.chatgpt.com/docs/non-interactive-mode#authenticate-in-automation),
+[advanced CI/CD account-auth scope](https://learn.chatgpt.com/docs/auth/ci-cd-auth).
