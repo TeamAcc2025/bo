@@ -5,6 +5,7 @@ import { homedir } from "node:os";
 import { join } from "node:path";
 import { codex, createSandbox } from "@ai-hero/sandcastle";
 import { noSandbox } from "@ai-hero/sandcastle/sandboxes/no-sandbox";
+import { recallEvidence } from "./gbrain-evidence.mjs";
 
 const complete = "<implementation>complete</implementation>";
 const git = (cwd, ...args) => execFileSync("git", args, { cwd, encoding: "utf8", stdio: ["ignore", "pipe", "pipe"] }).trim();
@@ -52,16 +53,29 @@ export async function runTask(job, overrides = {}) {
   await writeFile(join(dir, "setup.log"), setup.stdout + setup.stderr, { mode: 0o600 });
   assert.equal(setup.exitCode, 0, "Worktree setup failed");
   let feedback = "Implement the selected task and its acceptance criteria.";
-  const prompt = async (phase) => (await readFile(new URL(`${phase}.md`, templates), "utf8"))
+  const requirements = await readFile(new URL("gbrain.md", templates), "utf8");
+  const prompt = async (phase) => requirements + "\n" + (await readFile(new URL(`${phase}.md`, templates), "utf8"))
     .replaceAll("{{TASK_FILE}}", join(dir, "task.json"))
     .replaceAll("{{FEEDBACK_FILE}}", join(dir, "feedback.txt"))
     .replaceAll("{{BASE}}", base);
-  const invoke = async (phase, round) => sandbox.run({
-    agent, prompt: await prompt(phase), maxIterations: 1,
-    completionSignal: phase === "implement" ? complete : "</review>",
-    idleTimeoutSeconds: 180, completionTimeoutSeconds: 10,
-    logging: { type: "file", path: join(dir, `${phase}-${round}.log`) },
-  });
+  const invoke = async (phase, round) => {
+    const evidence = recallEvidence();
+    let result;
+    try {
+      result = await sandbox.run({
+        agent, prompt: await prompt(phase), maxIterations: 1,
+        completionSignal: phase === "implement" ? complete : "</review>",
+        idleTimeoutSeconds: 180, completionTimeoutSeconds: 10,
+        logging: { type: "file", path: join(dir, `${phase}-${round}.log`),
+          onAgentStreamEvent: (event) => evidence.observe(event) },
+      });
+    } finally {
+      await writeFile(join(dir, `${phase}-${round}.gbrain.json`),
+        JSON.stringify({ phase, round, ...evidence.report() }, null, 2) + "\n", { mode: 0o600 });
+    }
+    assert.ok(evidence.report().passed, `GBrain native recall evidence missing or failed in ${phase}-${round}`);
+    return result;
+  };
   for (let round = 1; round <= rounds; round++) {
     await writeFile(join(dir, "feedback.txt"), feedback, { mode: 0o600 });
     await stage(`implement-${round}`);
