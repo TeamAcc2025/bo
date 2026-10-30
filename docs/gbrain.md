@@ -20,12 +20,16 @@ platform configuration to make it pass. Stop on authentication failure and
 investigate privately; do not blindly retry models. Native errors abort the run.
 
 The first requested action is the actual native `codex_apps` tool
-`gbrain_bo_recall` with `entity: "projects/bo"` and numeric `limit: 1`. The agent
+`gbrain_bo.recall` (also exposed as `gbrain_bo_recall`) with
+`entity: "projects/bo"` and numeric `limit: 1`. The agent
 must emit `GBRAIN_SMOKE_OK` only after successful completion, without printing
 returned facts. The runner accepts success only when all of these hold:
 
 - A native `item.completed` / `mcp_tool_call` event identifies that exact server,
-  tool, entity and limit, has `status: "completed"`, a result and no error.
+  either accepted tool spelling, entity and limit, has `status: "completed"`,
+  a result and no error. Both spellings use the same checks, including rejecting
+  result or structured-content `isError: true`, `is_error: true` or non-null
+  `error` fields.
 - No native error, failed recall, duplicate recall or premature marker was seen.
 - The SDK reports one iteration, the exact marker and no commits.
 - HEAD and the complete tracked/untracked working-tree status were clean before
@@ -54,4 +58,5 @@ read-only recall, not application authorization or company isolation.
 
 Offline regression tests run through `npm test` and `bash scripts/check.sh`.
 They use synthetic native events and a substituted SDK boundary; they never
-invoke a model or GBrain.
+invoke a model or GBrain. Evidence tests cover completed successful and failed
+events for both accepted tool spellings, including result errors.
