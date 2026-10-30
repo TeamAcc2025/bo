@@ -1,5 +1,6 @@
 import assert from "node:assert/strict";
-import { execFileSync } from "node:child_process";
+import { execFileSync, spawn } from "node:child_process";
+import { once } from "node:events";
 import { mkdtemp, open, readFile, rm, stat, writeFile } from "node:fs/promises";
 import { tmpdir } from "node:os";
 import { join } from "node:path";
@@ -199,24 +200,20 @@ test("cancellation blocks queued publication and stops before a later push/creat
   assert.ok(!fake.calls.some(({ args }) => args[0] === "push" || args[1] === "create"));
 });
 
-async function running(pid) {
-  try {
-    const value = await readFile(`/proc/${pid}/stat`, "utf8");
-    // Zombies cannot run; the container's init owns their final reaping.
-    return !["Z", "X"].includes(value.match(/\)\s+([A-Z])/)[1]);
-  } catch (error) {
-    if (error.code === "ENOENT") return false;
-    throw error;
-  }
+async function running(pid, read = readFile) {
+  const { state } = await processMetadata(pid, read);
+  // Zombies cannot run; the container's init owns their final reaping.
+  return state !== undefined && !["Z", "X"].includes(state);
 }
 
-async function processMetadata(pid) {
+async function processMetadata(pid, read = readFile) {
   try {
-    const value = await readFile(`/proc/${pid}/stat`, "utf8");
+    const value = await read(`/proc/${pid}/stat`, "utf8");
     const [state, ppid, pgrp, session] = value.slice(value.lastIndexOf(")") + 2).trim().split(/\s+/);
     return { pid, state, ppid: Number(ppid), pgrp: Number(pgrp), session: Number(session) };
   } catch (error) {
-    if (error.code === "ENOENT") return { pid, exists: false };
+    // Exit can remove the path before open (ENOENT) or invalidate an open proc file (ESRCH).
+    if (error.code === "ENOENT" || error.code === "ESRCH") return { pid, exists: false };
     throw error;
   }
 }
@@ -229,6 +226,43 @@ async function eventually(check, message) {
   } while (Date.now() < until);
   assert.fail(message);
 }
+
+test("process probes tolerate disappearance but preserve live states and unexpected read errors", async () => {
+  const pid = 123;
+  for (const code of ["ENOENT", "ESRCH", "EACCES", "EPERM", "EIO"]) {
+    const error = Object.assign(new Error(`Synthetic ${code}`), { code });
+    const read = async () => { throw error; };
+    if (["ENOENT", "ESRCH"].includes(code)) {
+      assert.equal(await running(pid, read), false);
+      assert.deepEqual(await processMetadata(pid, read), { pid, exists: false });
+    } else {
+      for (const probe of [running, processMetadata]) {
+        await assert.rejects(probe(pid, read), (actual) => actual === error);
+      }
+    }
+  }
+  for (const state of ["R", "S", "D", "T", "Z", "X"]) {
+    const read = async () => `${pid} (synthetic fixture) ${state} 1 2 3 0`;
+    assert.equal(await running(pid, read), !["Z", "X"].includes(state));
+    assert.deepEqual(await processMetadata(pid, read), { pid, state, ppid: 1, pgrp: 2, session: 3 });
+  }
+});
+
+test("process probes handle a real proc stat read after exit", { skip: process.platform !== "linux", timeout: 5000 }, async (t) => {
+  const child = spawn(process.execPath, ["-e", "process.send('ready'); setInterval(()=>{},1000)"],
+    { stdio: ["ignore", "ignore", "ignore", "ipc"] });
+  const closed = once(child, "close");
+  t.after(async () => { child.kill("SIGKILL"); await closed; });
+  await once(child, "message");
+  const file = await open(`/proc/${child.pid}/stat`, "r");
+  t.after(() => file.close());
+  child.kill("SIGKILL");
+  await closed;
+  const read = () => readFile(file, "utf8");
+  await assert.rejects(read, { code: "ESRCH", syscall: "read" });
+  assert.equal(await running(child.pid, read), false);
+  assert.deepEqual(await processMetadata(child.pid, read), { pid: child.pid, exists: false });
+});
 
 for (const mode of ["timeout", "cancel"]) {
   test(`GNU timeout stops the whole fixture process group on ${mode}`, { skip: process.platform !== "linux", timeout: 15000 }, async (t) => {
@@ -261,7 +295,7 @@ for (const mode of ["timeout", "cancel"]) {
       catch (error) { if (error.code === "ENOENT") return false; throw error; }
     }, "Fixture subprocesses did not start");
     const timeoutPid = [...children][0]?.pid;
-    const snapshot = () => Promise.all([timeoutPid, ...pids].map(processMetadata));
+    const snapshot = () => Promise.all([timeoutPid, ...pids].map((pid) => processMetadata(pid)));
     const before = await snapshot();
     if (mode === "cancel") {
       assert.equal(children.size, 1);
@@ -271,7 +305,7 @@ for (const mode of ["timeout", "cancel"]) {
     const after = await snapshot();
     assert.equal(children.size, 0);
     try {
-      await eventually(async () => (await Promise.all(pids.map(running))).every((active) => !active), "Fixture process survived timeout/cancellation");
+      await eventually(async () => (await Promise.all(pids.map((pid) => running(pid)))).every((active) => !active), "Fixture process survived timeout/cancellation");
     } catch (error) {
       console.error(`Synthetic process metadata: ${JSON.stringify({ timeoutVersion, timeoutPid, before, after, final: await snapshot() })}`);
       throw error;
