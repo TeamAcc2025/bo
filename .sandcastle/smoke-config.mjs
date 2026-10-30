@@ -4,11 +4,12 @@ import { noSandbox } from "@ai-hero/sandcastle/sandboxes/no-sandbox";
 
 export const marker = "SANDCASTLE_SMOKE_OK";
 
-export function smokeOptions(model) {
+export function smokeOptions(model, gitConfig) {
   assert.ok(typeof model === "string" && model.trim(), "Set SANDCASTLE_MODEL to an available Codex model");
+  assert.ok(typeof gitConfig === "string" && gitConfig, "Provide a private Git configuration");
   return {
     agent: codex(model, { captureSessions: false, effort: "low" }),
-    sandbox: noSandbox(),
+    sandbox: noSandbox({ env: { GIT_CONFIG_GLOBAL: gitConfig } }),
     branchStrategy: { type: "head" },
     prompt: `Connectivity test only. Do not use tools, run commands, or change files. Reply with exactly ${marker}.`,
     completionSignal: marker,
