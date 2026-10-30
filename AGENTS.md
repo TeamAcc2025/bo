@@ -17,8 +17,10 @@ for translation or localized product content.
 The owner should provide only the task and its acceptance criteria. Apply these
 defaults without requiring a repeated setup prompt or manual skill mentions:
 
-1. Read project instructions and recall `projects/bo` through the connected
-   GBrain BO plugin before planning. Project files remain authoritative. Save
+1. Read project instructions and call GBrain BO `recall` with
+   `entity="projects/bo"` before planning. Remembered facts require `recall`;
+   `context_pack`, search, and entity cards do not substitute for it.
+   Project files remain authoritative. Save
    durable user decisions, preferences, commitments, and location pointers;
    keep Git and task progress in project records. Use `ttl: "3d"` for short-lived
    state another session needs, `replaces` for changed facts, and `content_origin`
@@ -32,11 +34,15 @@ defaults without requiring a repeated setup prompt or manual skill mentions:
    Sandcastle controller in `docs/sandcastle.md`. Derive an owner-selected
    private plan from the requested scope or use approved tracker issues.
    Run independent tasks with at most two concurrent agents; keep dependent
-   work sequential. Phase workers follow their assigned prompt without nested
+   work sequential. Include the English, native GBrain recall, and relevant
+   Matt Skills defaults in every private plan task body so implementation and
+   review phases receive them. Phase workers follow their assigned prompt without nested
    CLI/model batches. Read-only investigation and environment setup use tools
    directly.
 4. Before Sandcastle commands, source
    `/home/agent/.local/share/bo-sandcastle/sandcastle.env` in the same shell.
+   Use the documented `SANDCASTLE_MODEL=gpt-6.1-sol` default unless the owner
+   selects another model.
    Require the private runtime and `BO_AUTH_STORE_URL` /
    `BO_AUTH_STORE_AUTHORIZATION` bindings without displaying their values.
    Use the saved ChatGPT subscription sessions. Preserve the parent's
