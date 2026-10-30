@@ -1,5 +1,7 @@
 # Triage labels
 
+See [Issue tracker](issue-tracker.md) for guidance on working with tasks and their dependencies.
+
 | Canonical role | GitHub label | Meaning |
 | --- | --- | --- |
 | needs-triage | needs-triage | Maintainer needs to evaluate the issue |
