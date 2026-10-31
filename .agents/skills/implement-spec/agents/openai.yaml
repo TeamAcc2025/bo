@@ -1,5 +1,6 @@
 interface:
   display_name: "Implement Spec"
   short_description: "Implement the result of /to-spec and /to-tickets in code."
+  default_prompt: "Use $implement-spec to coordinate the approved spec's ticket graph through implementation and review under this project's controller and worker constraints."
 policy:
   allow_implicit_invocation: true

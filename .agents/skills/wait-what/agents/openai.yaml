@@ -1,5 +1,6 @@
 interface:
   display_name: "Wait What"
   short_description: "Re-pitch that: simpler, with the context I'm missing"
+  default_prompt: "Use $wait-what to explain your last response more simply, with the context I need to follow it."
 policy:
   allow_implicit_invocation: true

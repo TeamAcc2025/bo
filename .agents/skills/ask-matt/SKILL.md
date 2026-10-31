@@ -1,6 +1,6 @@
 ---
 name: ask-matt
-description: Ask which skill or flow fits your situation. A router over the skills in this repo.
+description: "Choose the right skill or sequence of skills when the user is unsure which workflow fits their situation or how to move between phases."
 ---
 
 # Ask Matt

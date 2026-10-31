@@ -1,6 +1,6 @@
 ---
 name: handoff
-description: Compact the current conversation into a handoff document for another agent to pick up.
+description: "Write a portable continuation brief for a fresh agent or colleague, saved outside the workspace. Use when moving to another harness or directory, handing off work, or forking a side task that needs the current context."
 argument-hint: "What will the next session be used for?"
 ---
 

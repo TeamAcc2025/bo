@@ -1,6 +1,6 @@
 ---
 name: implement
-description: "Implement a piece of work based on a spec or set of tickets."
+description: "Implement one approved piece of work from a spec or ticket, with tests at agreed seams, review, and a commit on the current branch. Use for a bounded implementation task; implement-spec coordinates a whole ticket graph."
 ---
 
 Implement the work described by the user in the spec or tickets.

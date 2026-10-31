@@ -1,5 +1,6 @@
 interface:
   display_name: "TDD"
   short_description: "Test-driven red-green-refactor"
+  default_prompt: "Use $tdd to build the agreed behavior one red-green slice at a time through our agreed public test seams."
 policy:
   allow_implicit_invocation: true

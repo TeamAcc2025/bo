@@ -1,6 +1,6 @@
 ---
 name: pr
-description: "Use when writing a PR body."
+description: "Write a concise PR body with a visual summary, before/after evidence, and merge risk. Use when drafting or updating a pull request description."
 metadata:
   credits:
     skill: show-me

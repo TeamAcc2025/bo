@@ -1,5 +1,6 @@
 interface:
   display_name: "Setup Matt Pocock Skills"
   short_description: "Configure a repo for the skills"
+  default_prompt: "Use $setup-matt-pocock-skills to inspect the project conventions and propose any missing or requested configuration changes for confirmation."
 policy:
   allow_implicit_invocation: true

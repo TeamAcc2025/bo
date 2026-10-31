@@ -1,5 +1,6 @@
 interface:
   display_name: "To Questionnaire"
   short_description: "Front-load questions into a doc for someone to answer"
+  default_prompt: "Use $to-questionnaire to clarify the recipient and what I need back one question at a time, then write a questionnaire for them."
 policy:
   allow_implicit_invocation: true

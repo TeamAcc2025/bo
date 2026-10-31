@@ -1,6 +1,6 @@
 ---
 name: triage
-description: Move issues and external PRs through a state machine of triage roles, categorise, verify, grill if needed, and write agent-ready briefs.
+description: "Evaluate incoming issues, verify their claims, and move them through configured triage roles with durable briefs. Use for raw reports or backlog triage; include external PRs only when the tracker treats them as a request surface, or a PR is explicitly named."
 ---
 
 # Triage

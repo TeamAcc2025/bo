@@ -1,6 +1,6 @@
 ---
 name: implement-spec
-description: "Implement the result of /to-spec and /to-tickets in code."
+description: "Coordinate implementation of an approved spec and its dependency-linked ticket graph on an integration branch. Use for the whole spec rather than one ticket, following the project's controller and worker constraints."
 ---
 
 You have been provided a spec. This spec should have tickets associated with it, describing how to implement the spec.
