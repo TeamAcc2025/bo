@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $improve-codebase-architecture to find worthwhile deepening opportunities and present a visual report so I can choose one to explore."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning.

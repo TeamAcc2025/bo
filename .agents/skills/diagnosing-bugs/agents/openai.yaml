@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $diagnosing-bugs to reproduce and diagnose the failure I describe, then verify the fix with a suitable regression test."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning.

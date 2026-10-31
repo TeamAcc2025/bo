@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $code-review to review my changes against the agreed baseline on repository standards and the originating spec."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning. GitHub read capability for tracker-hosted specs.

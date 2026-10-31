@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $writing-for-agents to improve these agent instructions with clear context pointers, steps, and completion criteria."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning.

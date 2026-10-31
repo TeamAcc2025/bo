@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $domain-modeling to sharpen the domain terms we are discussing and record resolved terms and qualifying decisions."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning.

@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $ask-matt to recommend the right skill or workflow for my current situation."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning.

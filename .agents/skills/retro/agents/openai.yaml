@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $retro to review this session and recommend improvements to the agent environment and process for future work."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning.

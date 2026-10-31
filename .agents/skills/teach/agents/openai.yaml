@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $teach to establish a learning workspace for the topic I want to study and guide me through a focused first lesson."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning.

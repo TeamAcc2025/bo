@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $wizard to scope the human-only steps in this procedure and generate an interactive bash script to guide me through them."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning.

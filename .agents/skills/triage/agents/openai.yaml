@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $triage to show incoming work that needs attention and help me choose an item to evaluate."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning. GitHub read/write capability for authorized issue triage.

@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $codebase-design to help shape a deep module with a small interface and a clear test seam."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning.

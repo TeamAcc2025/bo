@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $handoff to write a continuation brief for the next session, referencing existing artifacts and suggesting relevant skills."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning.

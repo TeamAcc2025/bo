@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $implement-spec to coordinate the approved spec's ticket graph through implementation and review under this project's controller and worker constraints."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning. GitHub read/write capability for authorized spec and ticket orchestration.

@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $grilling to challenge my plan one question at a time until we agree on the decisions and assumptions."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning.
