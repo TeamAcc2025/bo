@@ -1,7 +1,6 @@
 ---
 name: setup-matt-pocock-skills
-description: "Configure this repo for the engineering skills: set up its issue tracker, triage label vocabulary, and domain doc layout. Run once before first use of the other engineering skills."
-disable-model-invocation: true
+description: "Configure missing or intentionally changed project conventions for Matt skills: issue tracker, triage labels, and domain doc layout. Inspect existing configuration, then confirm proposed changes; use for initial setup or a deliberate convention change."
 ---
 
 # Setup Matt Pocock's Skills

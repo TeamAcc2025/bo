@@ -1,7 +1,6 @@
 ---
 name: to-questionnaire
-description: Turn a decision you can't fully answer into a questionnaire for someone else to fill in.
-disable-model-invocation: true
+description: "Write a Markdown questionnaire when a decision depends on knowledge held by someone else. Interview the user about the recipient and the answers needed, then target the questions at that knowledge gap."
 ---
 
 Turn something the user can't answer alone into a **questionnaire**: a Markdown document they hand to one person to fill in async, or fill out together over a meeting. The recipient holds knowledge the user lacks; the questionnaire pulls it out of them.

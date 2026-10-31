@@ -1,5 +1,6 @@
 interface:
   display_name: "To Spec"
   short_description: "Turn a conversation into a spec"
+  default_prompt: "Use $to-spec to synthesise our agreed discussion into a spec for the configured tracker, confirming test seams without restarting discovery."
 policy:
-  allow_implicit_invocation: false
+  allow_implicit_invocation: true
