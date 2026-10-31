@@ -42,9 +42,10 @@ owner's language. Keep code identifiers and repository tooling in English.
 
 Matt Pocock Skills are installed in `.agents/skills/`; see
 `docs/agents/matt-skills.md` for the pinned source and invocation examples.
-For an explicitly named Matt skill, or one invoked by another skill, read
-`.agents/skills/<name>/SKILL.md` and follow it with the available Codex tools.
-This also applies when the environment's live skill catalog omits the skill.
+Automatically select appropriate Matt skills for the task. For a selected skill,
+an explicitly named skill, or one invoked by another skill, read
+`.agents/skills/<name>/SKILL.md` and follow it with the available Codex tools,
+even when the environment's live skill catalog omits it.
 
 ### Issue tracker
 
