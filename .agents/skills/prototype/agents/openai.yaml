@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $prototype to build a throwaway artifact that answers the design question we are exploring."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning. GitHub write capability when recording prototype evidence on the tracker.

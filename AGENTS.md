@@ -47,6 +47,9 @@ an explicitly named skill, or one invoked by another skill, read
 `.agents/skills/<name>/SKILL.md` and follow it with the available Codex tools,
 even when the environment's live skill catalog omits it.
 
+Before choosing a BO work phase or using connected services, read
+`docs/agents/workflows.md` for transitions, approval gates, and capability preflights.
+
 ### Issue tracker
 
 Tasks and specs live in GitHub Issues for `TeamAcc2025/bo`. When reading or

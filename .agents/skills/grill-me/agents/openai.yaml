@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $grill-me to stress-test my idea, asking one question at a time until we reach a shared understanding."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning.

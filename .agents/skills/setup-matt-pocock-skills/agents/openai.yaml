@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $setup-matt-pocock-skills to inspect the project conventions and propose any missing or requested configuration changes for confirmation."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning. GitHub read/write capability when configuring the tracker.

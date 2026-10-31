@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $research to investigate my question against primary sources and save cited findings in the repository."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning.

@@ -1,0 +1,397 @@
+{
+  "schema_version": 1,
+  "upstream": {
+    "repository": "https://github.com/mattpocock/skills",
+    "release": "1.3.2",
+    "revision": "a496f5513d4a4cf889bc48e189e579f4b0bdf6aa"
+  },
+  "invocation": {
+    "allow_implicit_invocation": true,
+    "omit_frontmatter": [
+      "disable-model-invocation"
+    ]
+  },
+  "released_skills": [
+    "ask-matt",
+    "code-review",
+    "codebase-design",
+    "diagnosing-bugs",
+    "domain-modeling",
+    "grill-me",
+    "grill-with-docs",
+    "grilling",
+    "handoff",
+    "implement",
+    "implement-spec",
+    "improve-codebase-architecture",
+    "pr",
+    "prototype",
+    "research",
+    "retro",
+    "setup-matt-pocock-skills",
+    "tdd",
+    "teach",
+    "to-questionnaire",
+    "to-spec",
+    "to-tickets",
+    "triage",
+    "wait-what",
+    "wayfinder",
+    "wizard",
+    "writing-for-agents"
+  ],
+  "skills": {
+    "ask-matt": {
+      "description": "Choose the right skill or sequence of skills when the user is unsure which workflow fits their situation or how to move between phases.",
+      "default_prompt": "Use $ask-matt to recommend the right skill or workflow for my current situation.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "fabe67ac6507effdc01e322d261d1295ed554d06ce2b811c5c489243618bed0a"
+    },
+    "code-review": {
+      "description": "Review a branch, PR, or work in progress against a fixed commit, branch, tag, or merge-base. Assess repository standards and the originating spec separately.",
+      "default_prompt": "Use $code-review to review my changes against the agreed baseline on repository standards and the originating spec.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning. GitHub read capability for tracker-hosted specs."
+        }
+      ],
+      "body_sha256": "4cf9f6f3447ebf8ca67ec3f3c80ffed3a11b24b47999b25fc239801ae307b7a5"
+    },
+    "codebase-design": {
+      "description": "Design deep modules with small interfaces and clear seams. Use when shaping a module, exploring alternative interfaces, improving testability or AI navigation, or when another skill needs the shared design vocabulary.",
+      "default_prompt": "Use $codebase-design to help shape a deep module with a small interface and a clear test seam.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "bf218e7ecc69d33a682cf2ffe7c3a7bc45de3c5bc1410fb6cb9beb0081d73a03"
+    },
+    "diagnosing-bugs": {
+      "description": "Diagnose an observed bug, failure, flake, or performance regression. Build a reproducible feedback loop, minimise the failure, test hypotheses, and fix it with a regression test at a suitable seam.",
+      "default_prompt": "Use $diagnosing-bugs to reproduce and diagnose the failure I describe, then verify the fix with a suitable regression test.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "8125e19793332f9f97cdbf37db5862e7e5877e2a390c5317cb098b273b164c00"
+    },
+    "domain-modeling": {
+      "description": "Sharpen domain terminology and record resolved terms in a glossary and qualifying decisions in ADRs. Use when changing the domain model, editing GLOSSARY.md, or recording architectural trade-offs; reading existing vocabulary alone does not need this workflow.",
+      "default_prompt": "Use $domain-modeling to sharpen the domain terms we are discussing and record resolved terms and qualifying decisions.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "a32b039663aaa8fc15a502cf5d4c02382d0f721ca2905c36b53f9110d75e7b61"
+    },
+    "grill-me": {
+      "description": "Sharpen a plan, design, or idea through a plain interview using the shared grilling engine. Use for an interview without glossary or ADR recording; grill-with-docs adds that documentation.",
+      "default_prompt": "Use $grill-me to stress-test my idea, asking one question at a time until we reach a shared understanding.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "dba3de439b31e958dfe3e7ac400899749e3f371bd5abf1e22f2cbd70e5d0d916"
+    },
+    "grill-with-docs": {
+      "description": "Sharpen a plan or design through an interview while recording resolved domain terms and qualifying decisions in a glossary and ADRs. Use when the discussion should leave project documentation.",
+      "default_prompt": "Use $grill-with-docs to sharpen my plan one question at a time and record resolved terms and qualifying decisions in the project docs.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "3718eba313f0e6110be0536ea9947f6b7f554cd2063668a0c329cacbbb3ddfd3"
+    },
+    "grilling": {
+      "description": "Stress-test a plan, decision, or idea through a decision-tree interview until every branch is resolved. Use directly for an interview or as the shared interview engine within another workflow.",
+      "default_prompt": "Use $grilling to challenge my plan one question at a time until we agree on the decisions and assumptions.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "34b5c30ba8b488abd732bbfdd5af30120288680798ba4c736312b7609122c40c"
+    },
+    "handoff": {
+      "description": "Write a portable continuation brief for a fresh agent or colleague, saved outside the workspace. Use when moving to another harness or directory, handing off work, or forking a side task that needs the current context.",
+      "default_prompt": "Use $handoff to write a continuation brief for the next session, referencing existing artifacts and suggesting relevant skills.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "74a9c998d55ac65d671579563b258db3e505d0b11b79decd1a962ca3fde2cfe7"
+    },
+    "implement": {
+      "description": "Implement one approved piece of work from a spec or ticket, with tests at agreed seams, review, and a commit on the current branch. Use for a bounded implementation task; implement-spec coordinates a whole ticket graph.",
+      "default_prompt": "Use $implement to complete the approved work in the supplied spec or ticket, verify it, and commit on the current branch.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning. GitHub read capability for tracker-hosted tasks."
+        }
+      ],
+      "body_sha256": "ef544187d471c3f031695f1f2145a0a5ae5e8622fb3db013fe342a497b8864a0"
+    },
+    "implement-spec": {
+      "description": "Coordinate implementation of an approved spec and its dependency-linked ticket graph on an integration branch. Use for the whole spec rather than one ticket, following the project's controller and worker constraints.",
+      "default_prompt": "Use $implement-spec to coordinate the approved spec's ticket graph through implementation and review under this project's controller and worker constraints.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning. GitHub read/write capability for authorized spec and ticket orchestration."
+        }
+      ],
+      "body_sha256": "d28950e6f09ad48d8756991019695bcf011166d35b72f5af2c49bf8a1f31edb7"
+    },
+    "improve-codebase-architecture": {
+      "description": "Survey a codebase for architectural friction and deepening opportunities, present a visual HTML report, then interview the user about their chosen candidate. Use to find refactor candidates before designing or implementing one.",
+      "default_prompt": "Use $improve-codebase-architecture to find worthwhile deepening opportunities and present a visual report so I can choose one to explore.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "0d154784c4981aefff1b4bf347c4d7b57ca2e1996b91919815489f48dd7d0f68"
+    },
+    "pr": {
+      "description": "Write a concise PR body with a visual summary, before/after evidence, and merge risk. Use when drafting or updating a pull request description.",
+      "default_prompt": "Use $pr to draft a concise PR body showing the change, verification evidence, and merge risk.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "c20ed01e39298204271ed7e26cb651a72b671ee81ec8b697fa28dd5d3380c2aa"
+    },
+    "prototype": {
+      "description": "Explore a design question with a throwaway prototype: a shareable HTML demo for logic or state, or contrasting UI variants for appearance. Use when a runnable artifact will help settle the design before production implementation.",
+      "default_prompt": "Use $prototype to build a throwaway artifact that answers the design question we are exploring.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning. GitHub write capability when recording prototype evidence on the tracker."
+        }
+      ],
+      "body_sha256": "85479029c89fa4c516a947e2bb5cd0843cf6293cad61cf48b44d513f5181b29d"
+    },
+    "research": {
+      "description": "Investigate a question against primary sources and save cited findings as a Markdown file in the repo. Use when a decision needs documentation, API facts, or reading legwork, including research delegated to a background agent.",
+      "default_prompt": "Use $research to investigate my question against primary sources and save cited findings in the repository.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "fd906cffcab959bfc8aef3c60baa132eb0e1c791e072dda0b07bab88e1f535b1"
+    },
+    "retro": {
+      "description": "Review a completed or troubled coding session and propose improvements to the agent's environment and process: navigation, checks, standards, steering docs, tools, and information access. Use for a session retrospective.",
+      "default_prompt": "Use $retro to review this session and recommend improvements to the agent environment and process for future work.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "3528d1c85fe164c415cc37b2b595e23f0df61c75ac15d9bcb7bbe7118827ab07"
+    },
+    "setup-matt-pocock-skills": {
+      "description": "Configure missing or intentionally changed project conventions for Matt skills: issue tracker, triage labels, and domain doc layout. Inspect existing configuration, then confirm proposed changes; use for initial setup or a deliberate convention change.",
+      "default_prompt": "Use $setup-matt-pocock-skills to inspect the project conventions and propose any missing or requested configuration changes for confirmation.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning. GitHub read/write capability when configuring the tracker."
+        }
+      ],
+      "body_sha256": "b744986ed033076ec8a80cce22cc5fad4088c8975c7d4aeefc23e9cd3fa1d187"
+    },
+    "tdd": {
+      "description": "Build a feature or fix a bug test-first through red-green slices at agreed public test seams. Use for test-driven implementation, red-green-refactor requests, or integration tests; agree the seams before writing tests.",
+      "default_prompt": "Use $tdd to build the agreed behavior one red-green slice at a time through our agreed public test seams.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "a5c4564b85435fbcd07a06d3357297ce4163a1ea56ed034eae196f18c8e7d061"
+    },
+    "teach": {
+      "description": "Teach a requested topic or skill over multiple sessions in a learning workspace with a mission, resources, interactive lessons, and learning records. Use when the user wants a sustained learning workspace rather than an ordinary question answered.",
+      "default_prompt": "Use $teach to establish a learning workspace for the topic I want to study and guide me through a focused first lesson.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "db9a54056a78418290311213f3668d3b0f154f54ef8c91bffea4b11dc67fde34"
+    },
+    "to-questionnaire": {
+      "description": "Write a Markdown questionnaire when a decision depends on knowledge held by someone else. Interview the user about the recipient and the answers needed, then target the questions at that knowledge gap.",
+      "default_prompt": "Use $to-questionnaire to clarify the recipient and what I need back one question at a time, then write a questionnaire for them.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "05111466dde422b1430e7d69875e7003941fd13e46cfe3880316e39ab83676bb"
+    },
+    "to-spec": {
+      "description": "Synthesise already-discussed decisions and codebase context into a spec for the configured issue tracker. Use after discovery has settled the work; confirm test seams without restarting the discovery interview.",
+      "default_prompt": "Use $to-spec to synthesise our agreed discussion into a spec for the configured tracker, confirming test seams without restarting discovery.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning. GitHub read/write capability for authorized spec publication."
+        }
+      ],
+      "body_sha256": "9bc986bf599128bea79697a60115308c8433715674952c1832408aac7e823044"
+    },
+    "to-tickets": {
+      "description": "Break an agreed plan, spec, or conversation into verifiable vertical tickets with explicit blockers. Use when work needs a ticket breakdown; get approval of the slices and dependencies before publishing to the configured tracker.",
+      "default_prompt": "Use $to-tickets to propose vertical tickets and blocking relationships for our agreed work, then publish the approved breakdown to the configured tracker.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning. GitHub read/write capability for authorized tickets and dependency links."
+        }
+      ],
+      "body_sha256": "ff230f40838f322c01a2bd8983f3228a5e1e31066bf1206d5f34d34e8252def8"
+    },
+    "triage": {
+      "description": "Evaluate incoming issues, verify their claims, and move them through configured triage roles with durable briefs. Use for raw reports or backlog triage; include external PRs only when the tracker treats them as a request surface, or a PR is explicitly named.",
+      "default_prompt": "Use $triage to show incoming work that needs attention and help me choose an item to evaluate.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning. GitHub read/write capability for authorized issue triage."
+        }
+      ],
+      "body_sha256": "7a32ed82e88fed60e264bdee6ec18772e560cc30841c5224930732032470e5ed"
+    },
+    "wait-what": {
+      "description": "Re-explain the previous response when the user is confused or asks for a simpler explanation. Restore missing context in simplified English using the project's glossary vocabulary.",
+      "default_prompt": "Use $wait-what to explain your last response more simply, with the context I need to follow it.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "d4eef446bb2a565d852680f98f77482aa19a1c2c501257b7d68e62d5e9f362e3"
+    },
+    "wayfinder": {
+      "description": "Map a large, uncertain effort that spans sessions as linked decision tickets on the issue tracker. Use when the route to the destination is unclear; resolve decisions until the work is ready for a spec and implementation tickets.",
+      "default_prompt": "Use $wayfinder to chart a shared decision map for this large uncertain effort, asking one question at a time to clarify the destination and frontier.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning. GitHub read/write capability for authorized decision maps and tickets."
+        }
+      ],
+      "body_sha256": "81f50f74c71b6f9e4cc2237722f163aca03a9fddf66bc58f2810b36f94dbcc3d"
+    },
+    "wizard": {
+      "description": "Generate an interactive bash wizard for setup, credentials, dashboard actions, migrations, or cutovers that require human steps. Use when the human must perform part of the procedure; scope the stages and captured values before authoring the script.",
+      "default_prompt": "Use $wizard to scope the human-only steps in this procedure and generate an interactive bash script to guide me through them.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "0b8b607a527e9b7c2481eed21a210227a24b42597e039683d108b1cc9e8a22b5"
+    },
+    "writing-for-agents": {
+      "description": "Write or improve documents that agents consume: skills, AGENTS.md, CLAUDE.md, and referenced instructions. Use when editing those documents or their context pointers to make triggers, steps, and completion criteria predictable.",
+      "default_prompt": "Use $writing-for-agents to improve these agent instructions with clear context pointers, steps, and completion criteria.",
+      "tools": [
+        {
+          "type": "mcp",
+          "value": "codex_apps",
+          "description": "BO native GBrain recall before planning."
+        }
+      ],
+      "body_sha256": "393d286f6500fb39fd69b3102680f3591df85257c3f9faf2818d75bd2d77f565"
+    }
+  },
+  "protected_files": {
+    ".agents/skills/ask-matt/PHASE-BOUNDARIES.md": "a8aa20158609ef39e2b308b6ba0660c91066838d07a867202e63a7744a88a3ed",
+    ".agents/skills/codebase-design/DEEPENING.md": "f3dd099ce99289bd213914d8ee3e2429b78309c3957ca4583f7659551b1d53c1",
+    ".agents/skills/codebase-design/DESIGN-IT-TWICE.md": "c222ab5a82e0405672eb9062d62496139a08828e45d07fc5f18e4952c10fac1a",
+    ".agents/skills/diagnosing-bugs/scripts/hitl-loop.template.sh": "35103539fc36873eea36074769ad454f9379d6fc8b2dc0e26ce987fd3bfe5503",
+    ".agents/skills/domain-modeling/ADR-FORMAT.md": "944c92aa790e8fbdc9199640b170979abb8a34ba8d0fe18c2a01a63bce140ca0",
+    ".agents/skills/domain-modeling/GLOSSARY-FORMAT.md": "21dcc40cdec8e151a829b98ab1517c1867bc444e3665134a98c6983411996801",
+    ".agents/skills/improve-codebase-architecture/HTML-REPORT.md": "581e8bb5a521e46bbda8ca7e19b15948bed882187108092ebb90c62513b77528",
+    ".agents/skills/pr/CREDITS.md": "a7a087127665d7298a72280ef6e19c41ad8404523712a788c8dc3ab414bc2497",
+    ".agents/skills/prototype/LOGIC.md": "f61c7d249e786a79ef289018901c348271e1798dd0b0bc5607b5c6f4d4a01ab9",
+    ".agents/skills/prototype/UI.md": "723211e878acbc7b6ff09755263f3295cde724ba902ff0064da41eed51d45ad3",
+    ".agents/skills/setup-matt-pocock-skills/domain.md": "593a7042218689f1d24df89df14eaf0a20e19e0d0a7d479a01947ac78f0784b9",
+    ".agents/skills/setup-matt-pocock-skills/issue-tracker-github.md": "6fdb3e9b00b7b0b115ecac3b1c00e3790f637f190abf598815368722c0a94692",
+    ".agents/skills/setup-matt-pocock-skills/issue-tracker-gitlab.md": "947602d33a80f98f939fb990995b8f95a3459b114b919c4221d08bd75d7cffe0",
+    ".agents/skills/setup-matt-pocock-skills/issue-tracker-local.md": "7dcda20a2eb4bdc89b95d1143423c0691309921cadae3132e6424f371030506e",
+    ".agents/skills/setup-matt-pocock-skills/triage-labels.md": "ae512af838c78b8750471c42cd2b20fa32319553e61d84c9a23d171b40ce14aa",
+    ".agents/skills/tdd/mocking.md": "3ceb807fdf4a47d6a93d4d9a891e5ba6d362a6247bd08adc451feebfc17361ef",
+    ".agents/skills/tdd/tests.md": "859f9e592c188fda4fc7277dd180e4ce9c7a2e13f6efe1f6f29eccc9d28c106a",
+    ".agents/skills/teach/GLOSSARY-FORMAT.md": "9b99859ec28437668130d8f2ce5a342938970f8a1ed4fd38c3eab4f4b5fff210",
+    ".agents/skills/teach/LEARNING-RECORD-FORMAT.md": "701fa34b6748aa89e6c960ffb815257f481a7d77fb2900f9028f7edf3fdd6052",
+    ".agents/skills/teach/MISSION-FORMAT.md": "8cacbb3c0644d3ae0ea4965564797099401a6930a23f7cf462918576587f2418",
+    ".agents/skills/teach/RESOURCES-FORMAT.md": "e9cacf34026e11a8d1c8f9de88abe5bcbf654f4ebdb25cae8c0de0d5f48f44ec",
+    ".agents/skills/triage/AGENT-BRIEF.md": "7f5f87fed3033df1b06e083c480f3e847b1fbb0647746b8a4c6a50f9f26ef44f",
+    ".agents/skills/triage/OUT-OF-SCOPE.md": "1fbf9b432130c6380aa65813b55553cfda150309b27c595e183f8e335b8a190d",
+    ".agents/skills/wizard/template.sh": "6566f147299bc6f1d941e64591ed04385416d543e11f96f564c7228f5018d0ed",
+    ".agents/skills/writing-for-agents/SKILL-MECHANICS.md": "c768e6307c7c10728c401c213f2c4ba71c542127eeb7ad2956aabd15a0fa0059",
+    ".agents/MATT-SKILLS-LICENSE": "0e7ac423bf2c6e223b7c5b156f8cf72da49d748e56a1641402c31f22ad07dbb5"
+  }
+}

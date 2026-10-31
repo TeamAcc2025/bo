@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $implement to complete the approved work in the supplied spec or ticket, verify it, and commit on the current branch."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning. GitHub read capability for tracker-hosted tasks.

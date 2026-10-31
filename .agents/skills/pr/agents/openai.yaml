@@ -4,3 +4,8 @@ interface:
   default_prompt: "Use $pr to draft a concise PR body showing the change, verification evidence, and merge risk."
 policy:
   allow_implicit_invocation: true
+dependencies:
+  tools:
+  - type: mcp
+    value: codex_apps
+    description: BO native GBrain recall before planning.
