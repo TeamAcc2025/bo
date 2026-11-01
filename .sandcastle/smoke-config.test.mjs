@@ -4,7 +4,7 @@ import test from "node:test";
 import { marker, smokeOptions } from "./smoke-config.mjs";
 
 test("smoke uses the approved native Codex mode with one nonmutating iteration", () => {
-  const options = smokeOptions("test-model");
+  const options = smokeOptions("test-model", "/private/synthetic-gitconfig");
   const command = options.agent.buildPrintCommand({
     prompt: options.prompt,
     dangerouslySkipPermissions: true,
@@ -14,6 +14,7 @@ test("smoke uses the approved native Codex mode with one nonmutating iteration",
   assert.ok(!command.command.includes(options.prompt));
   assert.ok(options.prompt.includes("Do not use tools, run commands, or change files"));
   assert.equal(options.agent.captureSessions, false);
+  assert.equal(options.sandbox.env.GIT_CONFIG_GLOBAL, "/private/synthetic-gitconfig");
   assert.equal(options.maxIterations, 1);
   assert.equal(options.completionSignal, marker);
   assert.deepEqual(options.branchStrategy, { type: "head" });
