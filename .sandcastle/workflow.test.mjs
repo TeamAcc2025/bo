@@ -86,6 +86,12 @@ test("two native Sandcastle tasks overlap on separate branches without changing 
     assert.equal(result.rounds, 1);
     assert.equal(result.reviewedHead, result.head);
     assert.notEqual(result.head, f.base);
+    for (const phase of ["implement", "review"]) {
+      const evidence = JSON.parse(await readFile(join(tasks[i].job.dir, `${phase}-1.gbrain.json`), "utf8"));
+      assert.equal(evidence.passed, true);
+      assert.equal(evidence.phase, phase);
+      assert.equal(evidence.events[0].itemId, `synthetic-${phase}`);
+    }
     assert.equal(git(f.root, "rev-parse", result.branch), result.head);
     await assert.rejects(readFile(join(result.worktree, "result.txt")), { code: "ENOENT" });
   }
@@ -114,6 +120,15 @@ test("a failed real check feeds repair into a second implementation round before
   assert.equal(git(f.root, "rev-list", "--count", `${f.base}..${result.branch}`), "2");
   await f.unchanged();
 });
+
+for (const phase of ["implement", "review"]) {
+  test(`GBrain evidence is required in the ${phase} worker, not merely claimed`, { timeout: 30000 }, async (t) => {
+    const f = await fixture(t);
+    const { job, overrides } = f.job(`missing-${phase}`, { mode: `gbrain-missing-${phase}` });
+    await assert.rejects(runTask(job, overrides), /GBrain/);
+    await f.unchanged();
+  });
+}
 
 for (const mode of ["checkfailure", "reviewfailure", "dirty", "nochange", "missingmarker", "reviewdirty", "reviewcommit"]) {
   test(`${mode} cannot produce a ready result and preserves its worktree`, { timeout: 30000 }, async (t) => {

@@ -47,6 +47,17 @@ task = json.loads((private_dir / "task.json").read_text(encoding="utf8"))
 assert task["body"] == options["body"]
 assert task["body"] not in prompt, "Task text must be loaded as data, not expanded in the prompt"
 event("start")
+if options["mode"] != f"gbrain-missing-{phase}":
+    print(json.dumps({
+        "type": "item.completed",
+        "item": {
+            "id": f"synthetic-{phase}", "type": "mcp_tool_call",
+            "server": "codex_apps", "tool": "gbrain_bo.recall",
+            "arguments": {"entity": "projects/bo", "limit": 1},
+            "status": "completed", "error": None,
+            "result": {"content": [], "isError": False},
+        },
+    }), flush=True)
 if options["delay"]:
     time.sleep(options["delay"] / 1000)
 
