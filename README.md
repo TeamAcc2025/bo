@@ -19,3 +19,10 @@ See [AGENTS.md](AGENTS.md) for contributor instructions and
 
 [Sandcastle](docs/sandcastle.md) runs parallel task branches through implementation,
 checks, independent review, repair rounds, draft PRs, and required GitHub CI.
+
+## Agent workflow
+
+- [Matt Pocock Skills](docs/agents/matt-skills.md) documents the installed skills, pinned source, and invocation examples.
+- [Issue tracker](docs/agents/issue-tracker.md) explains how to manage tasks, specifications, and dependencies in GitHub Issues.
+- [Triage labels](docs/agents/triage-labels.md) defines the five canonical labels and their meanings.
+- [Domain docs](docs/agents/domain.md) explains when to read and create the glossary and architectural decision records.
