@@ -38,6 +38,18 @@ access boundary. Do not invent business rules, integrations, or acceptance resul
 Report the resulting behavior, verification, and any remaining limitation in the
 owner's language. Keep code identifiers and repository tooling in English.
 
+## Shared memory
+
+On each new chat's first GBrain-dependent task, perform the native recall required
+by `docs/agents/workflows.md`, then, before further retrieval or answering, use
+the same connection's `list_skills` with `schema_version: 2`. Find the usable,
+authorized `gbrain-memory/memory-recall` for the resolved brain/source and read it
+with `get_skill` using the returned `qualified_id` and current `revision`. Follow
+that revision for the task; resolve it anew in each fresh controller or worker
+session. Keep the canonical body in GBrain. If discovery or reading fails, report
+the blocker before dependent planning. This read-only routing does not expand
+source grants, permissions, capture authority, or publication rights.
+
 ## Agent skills
 
 Matt Pocock Skills are installed in `.agents/skills/`; see
