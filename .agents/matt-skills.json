@@ -159,7 +159,7 @@
           "description": "BO native GBrain recall before planning. GitHub read capability for tracker-hosted tasks."
         }
       ],
-      "body_sha256": "ef544187d471c3f031695f1f2145a0a5ae5e8622fb3db013fe342a497b8864a0"
+      "body_sha256": "aa5fc8d7885918931c07ae0c845538db500a1d8b9f2a581366e44e383089c3a2"
     },
     "implement-spec": {
       "description": "Coordinate implementation of an approved spec and its dependency-linked ticket graph on an integration branch. Use for the whole spec rather than one ticket, following the project's controller and worker constraints.",

@@ -55,7 +55,10 @@ BO deliberately applies four local metadata overrides to all 27 released skills:
   a server/plugin, or establish connection readiness. See the workflow preflight
   matrix before dependent actions.
 
-Instruction bodies, supporting resources, skill names, display names, short
+The implement instruction body has one reviewed local amendment: validation scope
+and commands follow repository policy while explicit full-suite requests remain
+binding. Its body hash in the preservation manifest records this amendment. Other
+instruction bodies, supporting resources, skill names, display names, short
 descriptions, argument hints, credits, and other metadata remain unchanged. These
 overrides preserve workflow approval, review, and publication rules. They grant
 no permissions: BO's controller owns publication, and phase workers stay within
