@@ -12,8 +12,10 @@ questions explicit in the next artifact.
 Call the actual native `codex_apps` GBrain BO recall tool (`gbrain_bo.recall`, also
 exposed as `gbrain_bo_recall`) with `entity="projects/bo"` before planning BO work.
 Use normal recall or task-appropriate bounds to retrieve the project context needed
-for the phase. Each Sandcastle implementation and review worker must make its own
-native call before planning its phase. Read the result privately;
+for the phase. After the initial recall, load the current memory-recall revision
+as directed by the [shared-memory instructions](../../AGENTS.md#shared-memory)
+before further retrieval or planning. Each Sandcastle implementation and review
+worker must perform this read-only sequence in its own fresh session. Read the result privately;
 keep recalled facts and private authentication out of logs and public artifacts.
 If recall is unavailable or fails, report the blocker and stop BO phase planning.
 A coordinator's recall, tool catalog entry, shell/API call, or claimed receipt
